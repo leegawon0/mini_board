@@ -60,13 +60,26 @@
             padding: 0;
             font-family: 'Pretendard-Regular';
         }
-        h1 {
+        .container {
+            width: 800px;
+        }
+        .title {
+            text-decoration: none;
+            display: block;
             font-size: 50px;
             font-family: 'bitbit';
             text-align: center;
-            margin: 10px;
-            color: #50DAFF;
+            margin-top: 30px;
+            margin-bottome: 10px;
+            color: #47deff;
             text-shadow: -2px 0 #6E3EC0, 0 2px #6E3EC0, 2px 0 #6E3EC0, 0 -2px #6E3EC0;
+        }
+        .title:hover {
+            color: #47deff;
+        }
+        table {
+            margin-top: 50px;
+            text-align: center;
         }
         th {
             font-family: 'GangwonEduPowerExtraBoldA';
@@ -76,27 +89,47 @@
         .page_no {
             display: flex;
             justify-content: center;
+            margin-top: 50px;
         }
-        a {
+        .page_btn {
+            text-decoration: none;
             margin: 5px;
             width: 35px;
+            height: 37px;
+            text-align: center;
+            line-height: 35px;
+            color: #6E3EC0;
+            /* border: 1px solid #6E3EC0; */
+            border-radius: 7px;
+        }
+        .page_btn:hover {
+            text-decoration: none;
+            background-color: #6E3EC0;
+            color: white;
+            transition-duration: 0.3s;
+        }
+        .page_btn<?php echo $page_num ?> {
+            background-color: #6E3EC0;
+            color: white;
         }
         .col1 {
-            width: 10vw;
+            width: 20%;
         }
         .col2 {
-            width: 60vw;
+            width: 45%;
         }
         .col3 {
-            width: 30vw;
+            width: 35%;
         }
-        table {
-            text-align: center;
+        .board_title {
+            font-weight: 900;
+            text-align: left;
         }
     </style>
 </head>
 <body>
-    <h1>✦ MINI BOARD ✦</h1>
+<div class="container">
+    <a class='title' href='board_list.php'>✦ MINI BOARD ✦</a>
     <table class='table table-striped'>
         <colgroup>
             <col class="col1">
@@ -116,9 +149,9 @@
                 {
             ?>
                 <tr>
-                    <td><?php echo $recode["board_no"] ?></td>
-                    <td><?php echo $recode["board_title"] ?></td>
-                    <td><?php echo $recode["board_wdate"] ?></td>
+                    <td class='board_no'><?php echo $recode["board_no"] ?></td>
+                    <td class='board_title'><?php echo $recode["board_title"] ?></td>
+                    <td class='board_wdate'><?php echo $recode["board_wdate"] ?></td>
                 </tr>
             <?php
                 }
@@ -129,11 +162,12 @@
         <?php
             for ($i=1; $i <= $max_page_num; $i++) { 
         ?>
-        <a class='btn btn-outline-secondary' href='board_list.php?page_num=<?php echo $i ?>' ><?php echo $i; ?></a>
+        <a class='page_btn page_btn<?php echo $i ?>' href='board_list.php?page_num=<?php echo $i ?>' ><?php echo $i; ?></a>
         <?php
             }
         ?>
     </div>
+</div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 </body>
 </html>
