@@ -7,3 +7,8 @@ ERD 그리기 (ERD cloud 사용) -> 데이터베이스 구축 ->
 게시글 제목 : 제목n
 게시글 내용 : 내용n
 작성일자 : 현재
+
+<파일 복사해서 덮어쓰는 커맨드>
+cmd에서
+xcopy (파일 받아올 주소) (복사한 파일 옮길 주소) /E /H /F /Y
+xcopy D:\workspace\mini_board\src C:\Apache24\htdocs\mini_board\src /E /H /F /Y
