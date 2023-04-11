@@ -133,7 +133,7 @@
         textarea {
             margin-top: 20px;
             width: 90%;
-            height: 160px;
+            height: 200px;
             border: 0;
             outline: none;
             padding-left: 10px;
@@ -175,13 +175,13 @@
     <form method="post" action="board_update.php">
         <input id="board_title" name="board_title" type="text" value="<? echo $result_info["board_title"] ?>" readonly>
         <label for="board_wdate">작성일자 : </label>
-        <input id="board_wdate" name="board_wdate" type="text" value="<? echo $result_info["board_wdate"] ?>">
+        <input id="board_wdate" name="board_wdate" type="text" value="<? echo $result_info["board_wdate"] ?>" readonly>
         <hr>
         <textarea cols=60 rows=8 id="board_content" name="board_content" readonly><? echo $result_info["board_content"] ?></textarea>
         <br>
-        <a class="update_btn" href="board_update.php?board_no=<? echo $result_info["board_no"] ?>">수정</button>
     </form>
     </div>
+<a class="update_btn" href="board_update.php?board_no=<? echo $result_info["board_no"] ?>">수정</a>
 </div>
 </body>
 </html>
