@@ -34,6 +34,7 @@ function select_board_info_no( &$param_no )
     ."    board_no "
     ."    ,board_title "
     ."    ,board_content "
+    ."    ,board_wdate "
     ." FROM "
     ."    board_info "
     ." WHERE "
@@ -190,7 +191,6 @@ function update_board_info_no( &$param_arr )
 //         ,"offset"   => 0
 //     );
 // $result = select_board_info_paging( $arr );
-
 // print_r( $result );
 // TODO : test End
 

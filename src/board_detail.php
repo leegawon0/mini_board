@@ -27,6 +27,7 @@
                 "board_no" => $arr_post["board_no"]
                 ,"board_title" => $arr_post["board_title"]
                 ,"board_content" => $arr_post["board_content"]
+                ,"board_wdate"  => $arr_post["board_wdate"]
             );
         
         // update
@@ -108,78 +109,62 @@
             padding-bottom: 10px;
         }
         input {
-            margin: 10px;
-            width: 80%;
+            margin-top: 20px;
+            width: 90%;
             height: 32px;
             border: 0;
             outline: none;
             padding-left: 10px;
-            background-color: #f0ebfc;
+            background-color: rgba(255, 255, 255, 0);
         }
-        input:focus {
-            border: 1px solid #b4a1e3;
+        input[id="board_title"] {
+            font-size: 1.8rem;
+        }
+        input[id="board_wdate"] {
+            width: 75%;
+            color: #6E3EC0;
         }
         label {
             color: #6E3EC0;
         }
         input[id="board_no"] {
-            background-color: rgba(255, 255, 255, 0);
             color: #6E3EC0;
         }
-        input[id="board_no"]:focus {
-            border: 0;
-        }
         textarea {
-            margin: 10px;
-            width: 80%;
-            height: 180px;
+            margin-top: 20px;
+            width: 90%;
+            height: 160px;
             border: 0;
             outline: none;
             padding-left: 10px;
-            background-color: #f0ebfc;
+            background-color: rgba(255, 255, 255, 0);
             resize: none;
-        }
-        textarea:focus {
-            border: 1.5px solid #b4a1e3;
         }
         label[for="board_content"] {
             margin-top: 10px;
             vertical-align: top;
         }
-        button{
-            background:#6E3EC0;
-            color:#fff;
-            border:none;
-            position:relative;
-            height:40px;
-            padding:0 1em;
-            cursor:pointer;
-            transition:500ms ease all;
-            outline:none;
+        .update_btn {
+            display: inline-block;
+            text-decoration: none;
+            margin: 5px;
+            width: 50px;
+            height: 40px;
+            text-align: center;
+            line-height: 40px;
+            color: #6E3EC0;
         }
-        button:hover{
-            background:#fff;
-            color:#6E3EC0;
+        .update_btn:hover {
+            text-decoration: none;
+            background-color: #6E3EC0;
+            color: white;
+            transition-duration: 0.3s;
         }
-        button:before,button:after{
-            content:'';
-            position:absolute;
-            top:0;
-            right:0;
-            height:2px;
-            width:0;
-            background: #6E3EC0;
-            transition:300ms ease all;
+        .update_btn:not(:hover) {
+            transition: 0.1s ease-out;
         }
-        button:after{
-            right:inherit;
-            top:inherit;
-            left:0;
-            bottom:0;
-        }
-        button:hover:before,button:hover:after{
-            width:100%;
-            transition:500ms ease all;
+        hr {
+            border: 1px solid #6E3EC0;
         }
     </style>
 </head>
@@ -188,16 +173,13 @@
     <a class='title' href='board_list.php'><img src='./common/title.gif' alt='title'></a>
     <div class="backdrop">
     <form method="post" action="board_update.php">
-        <label for="board_no">번호 : </label>
-        <input id="board_no" name="board_no" type="text" value="<? echo $result_info["board_no"] ?>" readonly>
+        <input id="board_title" name="board_title" type="text" value="<? echo $result_info["board_title"] ?>" readonly>
+        <label for="board_wdate">작성일자 : </label>
+        <input id="board_wdate" name="board_wdate" type="text" value="<? echo $result_info["board_wdate"] ?>">
+        <hr>
+        <textarea cols=60 rows=8 id="board_content" name="board_content" readonly><? echo $result_info["board_content"] ?></textarea>
         <br>
-        <label for="board_title">제목 : </label>
-        <input id="board_title" name="board_title" type="text" value="<? echo $result_info["board_title"] ?>">
-        <br>
-        <label for="board_content">내용 : </label>
-        <textarea cols=60 rows=8 id="board_content" name="board_content"><? echo $result_info["board_content"] ?></textarea>
-        <br>
-        <button type="submit">수정</button>
+        <a class="update_btn" href="board_update.php?board_no=<? echo $result_info["board_no"] ?>">수정</button>
     </form>
     </div>
 </div>

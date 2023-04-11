@@ -66,6 +66,14 @@
             background-size: 600px 600px;
             background-repeat: repeat;
         }
+        a {
+            text-decoration: none;
+            color: black;
+        }
+        a:hover {
+            text-decoration: none;
+            color: black;
+        }
         .container {
             width: 800px;
         }
@@ -178,13 +186,11 @@
                 foreach ($result_paging as $recode)
                 {
             ?>
-                <a href="board_update.php?board_no=<? echo ?>">
                 <tr class='board_line'>
                     <td class='board_no'><?php echo $recode["board_no"] ?></td>
-                    <td class='board_title'><?php echo $recode["board_title"] ?></td>
+                    <td class='board_title'><a href='board_detail.php?board_no=<? echo $recode["board_no"] ?>'><?php echo $recode["board_title"] ?></a></td>
                     <td class='board_wdate'><?php echo $recode["board_wdate"] ?></td>
                 </tr>
-                </a>
             <?php
                 }
             ?>
