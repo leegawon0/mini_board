@@ -38,7 +38,6 @@ function select_board_info_no( &$param_no )
     ."    board_info "
     ." WHERE "
     ."    board_no = :board_no "
-    ." ; "
     ;
 
     $arr_prepare = 
@@ -80,7 +79,7 @@ function select_board_info_paging( &$param_arr )
     ."    board_dflag = '0' "
     ." ORDER BY "
     ."    board_no DESC "
-    ." LIMIT :limit_num OFFSET :offset; "
+    ." LIMIT :limit_num OFFSET :offset "
     ;
 
     $arr_prepare = 
@@ -143,6 +142,47 @@ function select_board_info_cnt()
     return $result;
 }
 
+function update_board_info_no( &$param_arr )
+{
+    $sql = 
+        " UPDATE "
+        ." board_info "
+        ." SET "
+        ."      board_title = :board_title "
+        ."      ,board_content = :board_content "
+        ." WHERE "
+        ." board_no = :board_no "
+        ;
+
+    $arr_prepare =
+        array(
+            ":board_title"      => $param_arr["board_title"]
+            ,":board_content"   => $param_arr["board_content"]
+            ,":board_no"        => $param_arr["board_no"]
+        );
+
+    $conn = null;
+    try
+    {
+        db_conn( $conn );
+        $conn->beginTransaction();
+        $stmt = $conn->prepare( $sql );
+        $stmt->execute( $arr_prepare );
+        $result_cnt = $stmt->rowCount();
+        $conn->commit();
+    }
+    catch( Exception $e )
+    {
+        $conn->rollback();
+        return $e->getMessage();
+    }
+    finally
+    {
+        $conn = null;
+    }
+
+    return $result_cnt;
+}
 // TODO : test Start
 // $arr = 
 //     array(
@@ -157,6 +197,16 @@ function select_board_info_cnt()
 // TODO : start
 // $i = 20;
 // print_r(select_board_info_no( $i ));
+// TODO : end
+
+//  TODO : start
+// $arr = 
+//     array(
+//         "board_no" => 1
+//         ,"board_title" => "test_title1"
+//         ,"board_content" => "test_content1"
+//     );
+// echo update_board_info_no( $arr );
 // TODO : end
 
 ?>

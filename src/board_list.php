@@ -104,7 +104,7 @@
             text-decoration: none;
             margin: 5px;
             width: 35px;
-            height: 37px;
+            height: 35px;
             text-align: center;
             line-height: 35px;
             color: #6E3EC0;
@@ -178,11 +178,13 @@
                 foreach ($result_paging as $recode)
                 {
             ?>
+                <a href="board_update.php?board_no=<? echo ?>">
                 <tr class='board_line'>
                     <td class='board_no'><?php echo $recode["board_no"] ?></td>
                     <td class='board_title'><?php echo $recode["board_title"] ?></td>
                     <td class='board_wdate'><?php echo $recode["board_wdate"] ?></td>
                 </tr>
+                </a>
             <?php
                 }
             ?>
