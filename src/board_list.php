@@ -3,6 +3,7 @@
     define( "URL_DB", DOC_ROOT."mini_board/src/common/db_common.php" );
     include_once( URL_DB );
 
+    // GET 체크
     if( array_key_exists("page_num", $_GET) )
     {
         $page_num = $_GET["page_num"];
@@ -12,7 +13,7 @@
         $page_num = 1;
     }
     
-    $limit_num = 5;
+    $limit_num = 7;
     $offset = ( $page_num - 1 ) * $limit_num;
 
     // 게시판 정보 테이블 전체 카운트 획득
@@ -44,45 +45,53 @@
             src:url('//cdn.df.nexon.com/img/common/font/DNFBitBit-Regular.woff'),url('//cdn.df.nexon.com/img/common/font/DNFBitBit-Regular.woff2') ;
         }
         @font-face {
-            font-family: 'Pretendard-Regular';
-            src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
-            font-weight: 400;
+            font-family: 'NeoDunggeunmoPro-Regular';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/NeoDunggeunmoPro-Regular.woff2') format('woff2');
+            font-weight: normal;
             font-style: normal;
         }
         @font-face {
-            font-family: 'GangwonEduPowerExtraBoldA';
-            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEduPowerExtraBoldA.woff') format('woff');
+            font-family: 'EF_hyunygothic';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-01@1.0/EF_hyunygothic.woff2') format('woff2');
             font-weight: normal;
             font-style: normal;
         }
         * {
             margin: 0;
             padding: 0;
-            font-family: 'Pretendard-Regular';
+            font-family: 'NeoDunggeunmoPro-Regular';
+        }
+        body {
+            background-image: url('./common/pattern.png');
+            background-size: 600px 600px;
+            background-repeat: repeat;
         }
         .container {
             width: 800px;
         }
         .title {
             text-decoration: none;
-            display: block;
-            font-size: 50px;
-            font-family: 'bitbit';
-            text-align: center;
-            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
             margin-bottome: 10px;
-            color: #47deff;
-            text-shadow: -2px 0 #6E3EC0, 0 2px #6E3EC0, 2px 0 #6E3EC0, 0 -2px #6E3EC0;
         }
-        .title:hover {
-            color: #47deff;
+        .title>img {
+            width: 400px;
         }
-        table {
+        .backdrop {
             margin-top: 50px;
             text-align: center;
+            background-color: rgba(255, 255, 255, 0.7);
+            width: 100%;
+            backdrop-filter: blur(5px);
+        }
+        table {
+            width: 100%;
         }
         th {
-            font-family: 'GangwonEduPowerExtraBoldA';
+            font-family: 'EF_hyunygothic';
+            font-weight: 400;
             color: #6E3EC0;
             font-size: 20px;
         }
@@ -99,14 +108,15 @@
             text-align: center;
             line-height: 35px;
             color: #6E3EC0;
-            /* border: 1px solid #6E3EC0; */
-            border-radius: 7px;
         }
         .page_btn:hover {
             text-decoration: none;
             background-color: #6E3EC0;
             color: white;
             transition-duration: 0.3s;
+        }
+        .page_btn:not(:hover) {
+            transition: 0.1s ease-out;
         }
         .page_btn<?php echo $page_num ?> {
             background-color: #6E3EC0;
@@ -122,15 +132,35 @@
             width: 35%;
         }
         .board_title {
-            font-weight: 900;
             text-align: left;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        th {
+            height: 50px;
+            border-bottom: 2px solid #6E3EC0;
+        }
+        td {
+            height: 50px;
+            border-bottom: 1.5px solid #b4a1e3;
+        }
+        .board_line:hover {
+            background-color: #f0ebfc;
+            transition-duration: 0.3s;
+        }
+        .board_line:not(:hover) {
+            transition: 0.1s ease-out;
+        }
+        .board_no, .board_wdate {
+            color: #6E3EC0;
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <a class='title' href='board_list.php'>✦ MINI BOARD ✦</a>
-    <table class='table table-striped'>
+    <a class='title' href='board_list.php'><img src='./common/title.gif' alt='title'></a>
+    <div class="backdrop">
+    <table>
         <colgroup>
             <col class="col1">
             <col class="col2">
@@ -148,7 +178,7 @@
                 foreach ($result_paging as $recode)
                 {
             ?>
-                <tr>
+                <tr class='board_line'>
                     <td class='board_no'><?php echo $recode["board_no"] ?></td>
                     <td class='board_title'><?php echo $recode["board_title"] ?></td>
                     <td class='board_wdate'><?php echo $recode["board_wdate"] ?></td>
@@ -158,6 +188,7 @@
             ?>
         </tbody>
     </table>
+    </div>
     <div class="page_no">
         <?php
             for ($i=1; $i <= $max_page_num; $i++) { 

@@ -27,6 +27,45 @@ function db_conn( &$param_conn )
         }
 }
 
+function select_board_info_no( &$param_no )
+{
+    $sql = 
+    " SELECT "
+    ."    board_no "
+    ."    ,board_title "
+    ."    ,board_content "
+    ." FROM "
+    ."    board_info "
+    ." WHERE "
+    ."    board_no = :board_no "
+    ." ; "
+    ;
+
+    $arr_prepare = 
+        array(
+            ":board_no"    => $param_no
+        );
+
+    $conn = null;
+    try
+    {
+        db_conn( $conn );
+        $stmt = $conn->prepare( $sql );
+        $stmt->execute( $arr_prepare );
+        $result = $stmt->fetchAll();
+    }
+    catch( Exception $e )
+    {
+        return $e->getMessage();
+    }
+    finally
+    {
+        $conn = null;
+    }
+
+    return $result[0];
+}
+
 // SELECT
 function select_board_info_paging( &$param_arr )
 {
@@ -114,5 +153,10 @@ function select_board_info_cnt()
 
 // print_r( $result );
 // TODO : test End
+
+// TODO : start
+// $i = 20;
+// print_r(select_board_info_no( $i ));
+// TODO : end
 
 ?>
