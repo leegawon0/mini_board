@@ -33,8 +33,12 @@
         $result_cnt = update_board_info_no( $arr_info );
 
         // select
-        $result_info = select_board_info_no( $arr_post["board_no"] );
+        // $result_info = select_board_info_no( $arr_post["board_no"] );
+
+        header( "Location: board_detail.php?board_no=".$arr_post["board_no"]);
+        exit();
     }
+
 
     // print_r($result_info);
 ?>
@@ -181,6 +185,45 @@
             width:100%;
             transition:500ms ease all;
         }
+        .cancel_btn{
+            display: inline-block;
+            background:#6E3EC0;
+            color:#fff;
+            border:none;
+            position:relative;
+            line-height: 40px;
+            height:40px;
+            padding:0 1em;
+            cursor:pointer;
+            transition:500ms ease all;
+            outline:none;
+            justify-self: end;
+            margin-right: 10px;
+        }
+        .cancel_btn:hover{
+            background:#fff;
+            color:#6E3EC0;
+        }
+        .cancel_btn:before, .cancel_btn:after{
+            content:'';
+            position:absolute;
+            top:0;
+            right:0;
+            height:2px;
+            width:0;
+            background: #6E3EC0;
+            transition:300ms ease all;
+        }
+        .cancel_btn:after{
+            right:inherit;
+            top:inherit;
+            left:0;
+            bottom:0;
+        }
+        .cancel_btn:hover:before, .cancel_btn:hover:after{
+            width:100%;
+            transition:500ms ease all;
+        }
     </style>
 </head>
 <body>
@@ -197,6 +240,7 @@
         <label for="board_content">내용 : </label>
         <textarea cols=60 rows=8 id="board_content" name="board_content"><? echo $result_info["board_content"] ?></textarea>
         <br>
+        <a class="cancel_btn" href="board_detail.php?board_no=<? echo $result_info["board_no"] ?>">취소</a>
         <button type="submit">수정</button>
     </form>
     </div>

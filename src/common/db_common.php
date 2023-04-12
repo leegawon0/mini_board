@@ -184,6 +184,125 @@ function update_board_info_no( &$param_arr )
 
     return $result_cnt;
 }
+
+function insert_board_info( &$param_arr )
+{
+    $sql = 
+        " INSERT INTO "
+        ." board_info "
+        ." ( "
+        ."      board_title "
+        ."      ,board_content "
+        ."      ,board_wdate "
+        ." ) "
+        ." VALUES "
+        ." ( "
+        ."      :board_title "
+        ."      ,:board_content "
+        ."      ,NOW() "
+        ." ) "
+        ;
+
+    $arr_prepare =
+        array(
+            ":board_title"      => $param_arr["board_title"]
+            ,":board_content"   => $param_arr["board_content"]
+        );
+
+    $conn = null;
+    try
+    {
+        db_conn( $conn );
+        $conn->beginTransaction();
+        $stmt = $conn->prepare( $sql );
+        $stmt->execute( $arr_prepare );
+        $result_info = $stmt->rowCount();
+        $conn->commit();
+    }
+    catch( Exception $e )
+    {
+        $conn->rollback();
+        return $e->getMessage();
+    }
+    finally
+    {
+        $conn = null;
+    }
+
+    return $result_info;
+}
+
+function delete_board_info_no( &$param_no )
+{
+    $sql = 
+        " UPDATE "
+        ." board_info "
+        ." SET "
+        ."      board_dflag = '1' "
+        ."      ,board_ddate = NOW() "
+        ." WHERE "
+        ." board_no = :board_no "
+        ;
+
+    $arr_prepare =
+        array(
+            ":board_no" => $param_no
+        );
+
+    $conn = null;
+    try
+    {
+        db_conn( $conn );
+        $conn->beginTransaction();
+        $stmt = $conn->prepare( $sql );
+        $stmt->execute( $arr_prepare );
+        $result_cnt = $stmt->rowCount();
+        $conn->commit();
+    }
+    catch( Exception $e )
+    {
+        $conn->rollback();
+        return $e->getMessage();
+    }
+    finally
+    {
+        $conn = null;
+    }
+
+    return $result_cnt;
+}
+
+function select_board_info_maxcnt()
+{
+    $sql =
+    " SELECT "
+    ."  COUNT(board_no) cnt "
+    ." FROM "
+    ." board_info "
+    ;
+
+    $arr_prepare = array();
+
+    $conn = null;
+    try
+    {
+        db_conn( $conn );
+        $stmt = $conn->prepare( $sql );
+        $stmt->execute( $arr_prepare );
+        $result = $stmt->fetchAll();
+    }
+    catch( Exception $e )
+    {
+        return $e->getMessage();
+    }
+    finally
+    {
+        $conn = null;
+    }
+
+    return $result;
+}
+
 // TODO : test Start
 // $arr = 
 //     array(
@@ -207,6 +326,25 @@ function update_board_info_no( &$param_arr )
 //         ,"board_content" => "test_content1"
 //     );
 // echo update_board_info_no( $arr );
+// TODO : end
+
+//  TODO : start
+// $arr = 
+//     array(
+//         "board_title" => "test_title1"
+//         ,"board_content" => "test_content1"
+//     );
+// echo insert_board_info( $arr );
+// TODO : end
+
+//  TODO : start
+// $arr = 55;
+// echo delete_board_info_no( $arr );
+// TODO : end
+
+// TODO : start
+// $arr =  select_board_info_maxcnt();
+// print_r($arr);
 // TODO : end
 
 ?>

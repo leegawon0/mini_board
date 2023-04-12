@@ -8,15 +8,28 @@
     $http_method = $_SERVER["REQUEST_METHOD"];
 
     // print_r($http_method);
-    // GET 체크
-    if( $http_method === "GET" )
+
+
+    $result_cnt =  select_board_info_maxcnt();
+    $maxcnt = $result_cnt[0]["cnt"] + 1;
+
+    if( $http_method === "POST" )
     {
-        $board_no = 1;
-        if( array_key_exists("board_no", $_GET) )
-        {
-            $board_no = $_GET["board_no"];
-        }
-        $result_info = select_board_info_no( $board_no );
+    // POST일 때
+    $arr_post = $_POST;
+    $arr_info =
+        array(
+            "board_title" => $arr_post["board_title"]
+            ,"board_content" => $arr_post["board_content"]
+        );
+    
+    // insert
+
+    $result_info = insert_board_info( $arr_info );
+
+
+    header( "Location: board_detail.php?board_no=".$maxcnt );
+    exit();
     }
 
     // print_r($result_info);
@@ -29,7 +42,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    <title><? echo $result_info["board_title"] ?></title>
+    <title>글 작성</title>
     <style>
         @font-face{
             font-family:'bitbit';
@@ -67,7 +80,6 @@
         }
         .container {
             width: 800px;
-            display: grid;
         }
         .title {
             text-decoration: none;
@@ -84,74 +96,68 @@
             text-align: center;
             background-color: rgba(255, 255, 255, 0.7);
             width: 100%;
-            height: 500px;
+            height: 400px;
             backdrop-filter: blur(5px);
             border: 2px solid #6E3EC0;
             border-radius: 10px;
             padding-top: 10px;
             padding-bottom: 10px;
         }
-        p {
-            text-align: left;
-            display: inline-block;
-            width: 85%;
+        input {
+            margin: 10px;
+            width: 80%;
+            height: 32px;
+            border: 0;
+            outline: none;
+            padding-left: 10px;
+            background-color: #f0ebfc;
         }
-        p[id="board_title"] {
-            font-family: 'EF_hyunygothic';
-            font-size: 1.8rem;
-            margin-top: 15px;
-        }
-        p[id="board_wdate"] {
-            color: #6E3EC0;
-        }
-        p[id="board_content"] {
-            margin-top: 15px;
+        input:focus {
+            border: 1px solid #b4a1e3;
         }
         label {
             color: #6E3EC0;
         }
         input[id="board_no"] {
+            background-color: rgba(255, 255, 255, 0);
             color: #6E3EC0;
         }
+        input[id="board_no"]:focus {
+            border: 0;
+        }
         textarea {
-            margin-top: 20px;
-            width: 90%;
-            height: 280px;
+            margin: 10px;
+            width: 80%;
+            height: 240px;
             border: 0;
             outline: none;
             padding-left: 10px;
-            background-color: rgba(255, 255, 255, 0);
+            background-color: #f0ebfc;
             resize: none;
+        }
+        textarea:focus {
+            border: 1.5px solid #b4a1e3;
         }
         label[for="board_content"] {
             margin-top: 10px;
             vertical-align: top;
         }
-        .btnlist {
-            display: flex;
-            justify-content: flex-end;
-        }
-        .update_btn, .delete_btn {
-            display: inline-block;
+        button{
             background:#6E3EC0;
             color:#fff;
             border:none;
-            line-height: 40px;
-            width: 70px;
+            position:relative;
             height:40px;
-            position: relative;
-            text-align: center;
             padding:0 1em;
             cursor:pointer;
             transition:500ms ease all;
             outline:none;
-            margin-right: 10px;
         }
-        .update_btn:hover, .delete_btn:hover {
+        button:hover{
             background:#fff;
             color:#6E3EC0;
         }
-        .update_btn:before, .update_btn:after, .delete_btn:before, .delete_btn:after {
+        button:before,button:after{
             content:'';
             position:absolute;
             top:0;
@@ -161,35 +167,71 @@
             background: #6E3EC0;
             transition:300ms ease all;
         }
-        .update_btn:after, .delete_btn:after {
+        button:after{
             right:inherit;
             top:inherit;
             left:0;
             bottom:0;
         }
-        .update_btn:hover:before, .update_btn:hover:after, .delete_btn:hover:before, .delete_btn:hover:after {
+        button:hover:before,button:hover:after{
             width:100%;
             transition:500ms ease all;
         }
-        hr {
-            border: 1px solid #6E3EC0;
+        .cancel_btn{
+            display: inline-block;
+            background:#6E3EC0;
+            color:#fff;
+            border:none;
+            position:relative;
+            line-height: 40px;
+            height:40px;
+            padding:0 1em;
+            cursor:pointer;
+            transition:500ms ease all;
+            outline:none;
+            justify-self: end;
+            margin-right: 10px;
+        }
+        .cancel_btn:hover{
+            background:#fff;
+            color:#6E3EC0;
+        }
+        .cancel_btn:before, .cancel_btn:after{
+            content:'';
+            position:absolute;
+            top:0;
+            right:0;
+            height:2px;
+            width:0;
+            background: #6E3EC0;
+            transition:300ms ease all;
+        }
+        .cancel_btn:after{
+            right:inherit;
+            top:inherit;
+            left:0;
+            bottom:0;
+        }
+        .cancel_btn:hover:before, .cancel_btn:hover:after{
+            width:100%;
+            transition:500ms ease all;
         }
     </style>
 </head>
 <body>
 <div class="container">
     <a class='title' href='board_list.php'><img src='./common/title.gif' alt='title'></a>
-    <br>
     <div class="backdrop">
-        <p id="board_title"><? echo $result_info["board_title"] ?></p>
-        <p id="board_wdate">글 번호 : <? echo $result_info["board_no"] ?>  |  작성일자 : <? echo $result_info["board_wdate"] ?></p>
-        <hr>
-        <textarea cols=60 rows=8 id="board_content" name="board_content" readonly><? echo $result_info["board_content"] ?></textarea>
-    </div>
-    <br>
-    <div class="btnlist">
-        <a class="update_btn" href="board_update.php?board_no=<? echo $result_info["board_no"] ?>">수정</a>
-        <a class="delete_btn" href="board_delete.php?board_no=<? echo $result_info["board_no"] ?>" onclick="if(!confirm('정말 삭제하시겠습니까?')){return false;}">삭제</a>
+    <form method="post" action="board_insert.php">
+        <label for="board_title">제목 : </label>
+        <input id="board_title" name="board_title" type="text" required>
+        <br>
+        <label for="board_content">내용 : </label>
+        <textarea cols=60 rows=8 id="board_content" name="board_content" required></textarea>
+        <br>
+        <a class="cancel_btn" href="board_list.php">취소</a>
+        <button type="submit">작성</button>
+    </form>
     </div>
 </div>
 </body>
