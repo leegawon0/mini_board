@@ -1,6 +1,7 @@
 <?php
     define( "DOC_ROOT", $_SERVER["DOCUMENT_ROOT"]."/" );
     define( "URL_DB", DOC_ROOT."mini_board/src/common/db_common.php" );
+    define( "URL_HEADER", DOC_ROOT."mini_board/src/board_header.php" );
     include_once( URL_DB );
     // var_dump($_SERVER, $_GET, $_POST);
 
@@ -178,7 +179,7 @@
 </head>
 <body>
 <div class="container">
-    <a class='title' href='board_list.php'><img src='./common/title.gif' alt='title'></a>
+    <? include_once( URL_HEADER ); ?>
     <br>
     <div class="backdrop">
         <p id="board_title"><? echo $result_info["board_title"] ?></p>

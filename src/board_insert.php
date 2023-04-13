@@ -1,6 +1,7 @@
 <?php
     define( "DOC_ROOT", $_SERVER["DOCUMENT_ROOT"]."/" );
     define( "URL_DB", DOC_ROOT."mini_board/src/common/db_common.php" );
+    define( "URL_HEADER", DOC_ROOT."mini_board/src/board_header.php" );
     include_once( URL_DB );
     // var_dump($_SERVER, $_GET, $_POST);
 
@@ -8,7 +9,6 @@
     $http_method = $_SERVER["REQUEST_METHOD"];
 
     // print_r($http_method);
-
 
     $result_cnt =  select_board_info_maxcnt();
     $maxcnt = $result_cnt[0]["cnt"] + 1;
@@ -220,7 +220,7 @@
 </head>
 <body>
 <div class="container">
-    <a class='title' href='board_list.php'><img src='./common/title.gif' alt='title'></a>
+    <? include_once( URL_HEADER ); ?>
     <div class="backdrop">
     <form method="post" action="board_insert.php">
         <label for="board_title">제목 : </label>

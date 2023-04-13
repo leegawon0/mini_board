@@ -303,6 +303,45 @@ function select_board_info_maxcnt()
     return $result;
 }
 
+function select_search_info_paging( &$param_arr )
+{
+    $sql = 
+    " SELECT "
+    ."    board_no "
+    ."    ,board_title "
+    ."    ,board_wdate "
+    ." FROM "
+    ."    board_info "
+    ." WHERE "
+    ." board_title LIKE CONCAT('%', :searchword, '%') "
+    ." OR board_content LIKE CONCAT('%', :searchword, '%') "
+    ;
+
+    $arr_prepare = 
+        array(
+            ":searchword"    => $param_arr["searchword"]
+        );
+
+    $conn = null;
+    try
+    {
+        db_conn( $conn );
+        $stmt = $conn->prepare( $sql );
+        $stmt->execute( $arr_prepare );
+        $result = $stmt->fetchAll();
+    }
+    catch( Exception $e )
+    {
+        return $e->getMessage();
+    }
+    finally
+    {
+        $conn = null;
+    }
+
+    return $result;
+}
+
 // TODO : test Start
 // $arr = 
 //     array(
@@ -345,6 +384,15 @@ function select_board_info_maxcnt()
 // TODO : start
 // $arr =  select_board_info_maxcnt();
 // print_r($arr);
+// TODO : end
+
+// TODO : start
+$arr = 
+    array(
+        "searchword" => "테스트"
+    );
+$result = select_search_info_paging( $arr );
+var_dump( $result );
 // TODO : end
 
 ?>
