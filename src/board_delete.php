@@ -1,7 +1,8 @@
 <?php
-    define( "DOC_ROOT", $_SERVER["DOCUMENT_ROOT"]."/" );
-    define( "URL_DB", DOC_ROOT."mini_board/src/common/db_common.php" );
-    define( "URL_HEADER", DOC_ROOT."mini_board/src/board_header.php" );
+    // 상수 정의하고 DB 연결
+    define( "SRC_ROOT", $_SERVER["DOCUMENT_ROOT"]."/mini_board/src/" );
+    define( "URL_DB", SRC_ROOT."common/db_common.php" );
+    define( "URL_HEADER", SRC_ROOT."board_header.php" );
     include_once( URL_DB );
 
     $arr_get = $_GET;

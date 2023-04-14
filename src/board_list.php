@@ -1,10 +1,11 @@
 <?php
-    define( "DOC_ROOT", $_SERVER["DOCUMENT_ROOT"]."/" );
-    define( "URL_DB", DOC_ROOT."mini_board/src/common/db_common.php" );
-    define( "URL_HEADER", DOC_ROOT."mini_board/src/board_header.php" );
+    // 상수 정의하고 DB 연결
+    define( "SRC_ROOT", $_SERVER["DOCUMENT_ROOT"]."/mini_board/src/" );
+    define( "URL_DB", SRC_ROOT."common/db_common.php" );
+    define( "URL_HEADER", SRC_ROOT."board_header.php" );
     include_once( URL_DB );
 
-    // GET 체크
+    // GET 체크해서 $page_num 값 설정
     if( array_key_exists("page_num", $_GET) )
     {
         $page_num = $_GET["page_num"];
@@ -13,23 +14,66 @@
     {
         $page_num = 1;
     }
-    
+
+    // GET 체크해서 $range, $search 값 설정
+    if( array_key_exists("range", $_GET))
+    {
+        $range = $_GET["range"];
+        if( $_GET["range"] === '1' )
+        {
+            $search1 = $_GET["search"];
+            $search2 = null;
+            $search = $search1;
+        }
+        else if( $_GET["range"] === '2' )
+        {
+            $search1 = null;
+            $search2 = $_GET["search"];
+            $search = $search2;
+        }
+        else
+        {
+            $search1 = $_GET["search"];
+            $search2 = $_GET["search"];
+            $search = $search1;
+        }
+    }
+    else
+    {
+        $range = "";
+        $search1 = "";
+        $search2 = "";
+        $search = $search1;
+    }
+
+    // $limit_num과 $offset에 초기값 설정
     $limit_num = 7;
     $offset = ( $page_num - 1 ) * $limit_num;
 
-    // 게시판 정보 테이블 전체 카운트 획득
-    $result_cnt = select_board_info_cnt();
+    // $arr_prepare0에 위에서 입력한 검색어 $search1과 $search2 저장
+    $arr_prepare0 = 
+    array(
+        "search1" => $search1
+        ,"search2" => $search2
+    );
 
-    // 전체 페이지 번호
+    // $result_cnt에 전체 리스트 수 저장
+    $result_cnt = search_board_info_cnt( $arr_prepare0 );
+
+    // $max_page_num에 전체 페이지 수 저장
     $max_page_num = ceil( $result_cnt[0]["cnt"] / $limit_num );
 
+    // $arr_prepare에 위에서 입력한 $search1, $search2, $limit_num, $offset 값 저장
     $arr_prepare = 
         array(
-            "limit_num" => $limit_num
+            "search1" => $search1
+            ,"search2" => $search2
+            ,"limit_num" => $limit_num
             ,"offset"   => $offset
         );
-    $result_paging = select_board_info_paging( $arr_prepare );
-    // print_r( $result_paging );
+    
+    // $result_paging에 리스트에서 보여줄 게시글 정보 저장
+    $result_paging = select_search_info_paging( $arr_prepare );
 ?>
 
 <!DOCTYPE html>
@@ -76,6 +120,7 @@
             color: black;
         }
         .container {
+            display: grid;
             width: 800px;
         }
         .title {
@@ -110,6 +155,7 @@
             display: flex;
             justify-content: center;
             margin-top: 30px;
+            margin-bottom: 50px;
         }
         .page_btn, .first_btn, .last_btn {
             text-decoration: none;
@@ -176,13 +222,14 @@
             border:none;
             position:relative;
             line-height: 40px;
+            width: 80px;
             height:40px;
             padding:0 1em;
             cursor:pointer;
             transition:500ms ease all;
             outline:none;
             margin-right: 10px;
-            float: right;
+            justify-self: end;
         }
         .insert_btn:hover{
             background:#fff;
@@ -216,6 +263,47 @@
         .numarea, .datearea {
             justify-content: center;
         }
+        input {
+            margin: 10px;
+            width: 250px;
+            height: 35px;
+            border: 0;
+            outline: none;
+            padding-left: 10px;
+            background-color: #f0ebfc;
+        }
+        input:focus {
+            border: 1px solid #b4a1e3;
+        }
+        form {
+            float: center;
+            margin-bottom: 15px;
+            justify-self: center;
+        }
+        button {
+            text-decoration: none;
+            border: none;
+            background-color: #6E3EC0;
+            color: white;
+            width: 50px;
+            height: 35px;
+        }
+        select {
+            width: 75px;
+            border: 1px solid #b4a1e3;
+            box-sizing: border-box;
+            border-radius: 10px;
+            padding: 8px 8px;
+            line-height: 16px;
+        }
+
+        select:focus {
+            border: 1px solid #6E3EC0;
+            box-sizing: border-box;
+            border-radius: 10px;
+            outline: 3px solid #F8E4FF;
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
@@ -242,9 +330,9 @@
                 {
             ?>
                 <tr class='board_line'>
-                    <td class='board_no'><a href='board_detail.php?board_no=<? echo $recode["board_no"] ?>'><div class=numarea><?php echo $recode["board_no"] ?></div></a></td>
-                    <td class='board_title'><a href='board_detail.php?board_no=<? echo $recode["board_no"] ?>'><div class=titlearea><?php echo $recode["board_title"] ?></div></a></td>
-                    <td class='board_wdate'><a href='board_detail.php?board_no=<? echo $recode["board_no"] ?>'><div class=datearea><?php echo $recode["board_wdate"] ?></div></a></td>
+                    <td class='board_no'><a href='board_detail.php?board_no=<? echo $recode["board_no"] ?>&page_num=<? echo $page_num ?>&range=<? echo $range ?>&search=<? echo $search ?>'><div class=numarea><?php echo $recode["board_no"] ?></div></a></td>
+                    <td class='board_title'><a href='board_detail.php?board_no=<? echo $recode["board_no"] ?>&page_num=<? echo $page_num ?>&range=<? echo $range ?>&search=<? echo $search ?>'><div class=titlearea><?php echo $recode["board_title"] ?></div></a></td>
+                    <td class='board_wdate'><a href='board_detail.php?board_no=<? echo $recode["board_no"] ?>&page_num=<? echo $page_num ?>&range=<? echo $range ?>&search=<? echo $search ?>'><div class=datearea><?php echo $recode["board_wdate"] ?></div></a></td>
                 </tr>
             <?php
                 }
@@ -253,10 +341,32 @@
     </table>
     </div>
     </div>
+    <form method=get action="board_list.php">
+        <select name="range">
+            <? if($range === '0') { ?>
+            <option value="0" selected>전체</option>
+            <option value="1">제목</option>
+            <option value="2">내용</option> <? }
+            else if($range === '1') { ?>
+            <option value="0">전체</option>
+            <option value="1" selected>제목</option>
+            <option value="2">내용</option> <? }
+            else if($range === '2') { ?>
+            <option value="0">전체</option>
+            <option value="1">제목</option>
+            <option value="2" selected>내용</option> <? }
+            else { ?>
+            <option value="0">전체</option>
+            <option value="1">제목</option>
+            <option value="2">내용</option> <? } ?>
+        </select>
+        <input type="search" name="search" id="search" value="<? echo $search ?>">
+        <button type="submit">검색</button>
+    </form>
     <a class="insert_btn" href="board_insert.php">글쓰기</a>
     <br>
     <div class="page_no">
-    <a class='first_btn' href='board_list.php?page_num=1'>┃◀</a>
+    <a class='first_btn' href='board_list.php?page_num=1&range=<? echo $range ?>&search=<? echo $search ?>'>┃◀</a>
     <a class='first_btn' href='board_list.php?page_num=<?
         if($page_num <= 1)
         {
@@ -266,29 +376,40 @@
         {
             echo $page_num-1;
         }
-    ?>'>◀</a>
+    ?>&range=<? echo $range ?>&search=<? echo $search ?>'>◀</a>
         <?php
-        if($page_num < 4) {
-            for ($i=1; $i <= 5; $i++) { 
-        ?>
-        <a class='page_btn page_btn<?php echo $i ?>' href='board_list.php?page_num=<?php echo $i ?>' ><?php echo $i; ?></a>
-        <?php
-            }
+        if($max_page_num <= 5)
+        {
+            for ($i=1; $i <= $max_page_num; $i++) { 
+                ?>
+                <a class='page_btn page_btn<?php echo $i ?>' href='board_list.php?page_num=<?php echo $i ?>&range=<? echo $range ?>&search=<? echo $search ?>' ><?php echo $i; ?></a>
+                <?php
+                    }
         }
-        else if($page_num < $max_page_num - 1) {
-            for ($i=$page_num-2; $i <= $page_num+2; $i++) { 
+        else
+        {
+            if($page_num < 4) {
+                for ($i=1; $i <= 5; $i++) { 
             ?>
-            <a class='page_btn page_btn<?php echo $i ?>' href='board_list.php?page_num=<?php echo $i ?>' ><?php echo $i; ?></a>
+            <a class='page_btn page_btn<?php echo $i ?>' href='board_list.php?page_num=<?php echo $i ?>&range=<? echo $range ?>&search=<? echo $search ?>' ><?php echo $i; ?></a>
             <?php
                 }
             }
-        else {
-            for ($i=$max_page_num-4; $i <= $max_page_num; $i++) { 
+            else if($page_num < $max_page_num - 1) {
+                for ($i=$page_num-2; $i <= $page_num+2; $i++) { 
                 ?>
-                <a class='page_btn page_btn<?php echo $i ?>' href='board_list.php?page_num=<?php echo $i ?>' ><?php echo $i; ?></a>
+                <a class='page_btn page_btn<?php echo $i ?>' href='board_list.php?page_num=<?php echo $i ?>&range=<? echo $range ?>&search=<? echo $search ?>' ><?php echo $i; ?></a>
                 <?php
+                }
+            }
+            else {
+                for ($i=$max_page_num-4; $i <= $max_page_num; $i++) { 
+                    ?>
+                    <a class='page_btn page_btn<?php echo $i ?>' href='board_list.php?page_num=<?php echo $i ?>&range=<? echo $range ?>&search=<? echo $search ?>' ><?php echo $i; ?></a>
+                    <?php
                     }
             }
+        }
         ?>
         <a class='first_btn' href='board_list.php?page_num=<?
         if($page_num >= $max_page_num)
@@ -299,8 +420,8 @@
         {
             echo $page_num+1;
         }
-    ?>'>▶</a>
-    <a class='first_btn' href='board_list.php?page_num=<? echo $max_page_num ?>'>▶┃</a>
+    ?>&range=<? echo $range ?>&search=<? echo $search ?>'>▶</a>
+    <a class='first_btn' href='board_list.php?page_num=<? echo $max_page_num ?>&range=<? echo $range ?>&search=<? echo $search ?>'>▶┃</a>
     </div>
 </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>

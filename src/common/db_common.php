@@ -313,14 +313,60 @@ function select_search_info_paging( &$param_arr )
     ." FROM "
     ."    board_info "
     ." WHERE "
-    ." board_title LIKE CONCAT('%', :searchword, '%') "
-    ." OR board_content LIKE CONCAT('%', :searchword, '%') "
+    ." board_dflag = '0' AND ( "
+    ." board_title LIKE CONCAT('%', :search1, '%') "
+    ." OR board_content LIKE CONCAT('%', :search2, '%') ) "
+    ." ORDER BY "
+    ."    board_no DESC "
+    ." LIMIT :limit_num OFFSET :offset "
     ;
 
     $arr_prepare = 
         array(
-            ":searchword"    => $param_arr["searchword"]
+            ":search1"    => $param_arr["search1"]
+            ,":search2"    => $param_arr["search2"]
+            ,":limit_num"    => $param_arr["limit_num"]
+            ,":offset"      => $param_arr["offset"]
         );
+
+    $conn = null;
+    try
+    {
+        db_conn( $conn );
+        $stmt = $conn->prepare( $sql );
+        $stmt->execute( $arr_prepare );
+        $result = $stmt->fetchAll();
+    }
+    catch( Exception $e )
+    {
+        return $e->getMessage();
+    }
+    finally
+    {
+        $conn = null;
+    }
+
+    return $result;
+}
+
+function search_board_info_cnt( &$param_arr )
+{
+    $sql =
+    " SELECT "
+    ."  COUNT(board_no) cnt "
+    ." FROM "
+    ." board_info "
+    ." WHERE "
+    ." board_dflag = '0' AND ( "
+    ." board_title LIKE CONCAT('%', :search1, '%') "
+    ." OR board_content LIKE CONCAT('%', :search2, '%') ) "
+    ;
+
+    $arr_prepare = 
+    array(
+        ":search1"    => $param_arr["search1"]
+        ,":search2"    => $param_arr["search2"]
+    );
 
     $conn = null;
     try
@@ -387,12 +433,23 @@ function select_search_info_paging( &$param_arr )
 // TODO : end
 
 // TODO : start
-$arr = 
-    array(
-        "searchword" => "테스트"
-    );
-$result = select_search_info_paging( $arr );
-var_dump( $result );
+// $arr = 
+//     array(
+//         "search1" => "테스트"
+//         ,"search2" => "테스트"
+//     );
+// $result = select_search_info_paging( $arr );
+// var_dump( $result );
+// TODO : end
+
+// TODO : start
+// $arr = 
+//     array(
+//         "search1" => "테스트"
+//         ,"search2" => "테스트"
+//     );
+// $result = search_board_info_cnt( $arr );
+// var_dump( $result );
 // TODO : end
 
 ?>
