@@ -8,7 +8,6 @@
     // Request Method를 습득
     $http_method = $_SERVER["REQUEST_METHOD"];
 
-    // print_r($http_method);
     // GET 체크
     if( $http_method === "GET" )
     {
@@ -33,15 +32,9 @@
         // update
         $result_cnt = update_board_info_no( $arr_info );
 
-        // select
-        // $result_info = select_board_info_no( $arr_post["board_no"] );
-
         header( "Location: board_detail.php?board_no=".$arr_post["board_no"]);
         exit();
     }
-
-
-    // print_r($result_info);
 ?>
 
 <!DOCTYPE html>
