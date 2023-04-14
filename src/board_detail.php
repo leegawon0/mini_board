@@ -5,10 +5,10 @@
     define( "URL_HEADER", SRC_ROOT."board_header.php" );
     include_once( URL_DB );
 
+    // Request Method를 습득
     $http_method = $_SERVER["REQUEST_METHOD"];
 
-    // print_r($http_method);
-    // GET 체크
+    // GET 체크해서 $board_no 값 설정하고 $result_info에 해당 게시글 정보 저장
     if( $http_method === "GET" )
     {
         $board_no = 1;
@@ -19,7 +19,7 @@
         $result_info = select_board_info_no( $board_no );
     }
 
-    // GET 체크
+    // GET 체크해서 $page_num 값 설정
     if( array_key_exists("page_num", $_GET) )
     {
         $page_num = $_GET["page_num"];
@@ -29,6 +29,7 @@
         $page_num = 1;
     }
 
+    // GET 체크해서 $range, $search 값 설정
     if( array_key_exists("range", $_GET))
     {
         if( $_GET["range"] === '1' )
@@ -61,21 +62,24 @@
         $search = $search1;
     }
 
+    // $limit_num과 $offset에 초기값 설정
     $limit_num = 7;
     $offset = ( $page_num - 1 ) * $limit_num;
 
+    // $arr_prepare0에 위에서 입력한 검색어 $search1과 $search2 저장
     $arr_prepare0 = 
     array(
         "search1" => $search1
         ,"search2" => $search2
     );
 
-    // 게시판 정보 테이블 전체 카운트 획득
+    // $result_cnt에 전체 리스트 수 저장
     $result_cnt = search_board_info_cnt( $arr_prepare0 );
 
-    // 전체 페이지 번호
+    // $max_page_num에 전체 페이지 수 저장
     $max_page_num = ceil( $result_cnt[0]["cnt"] / $limit_num );
 
+    // $arr_prepare에 위에서 입력한 $search1, $search2, $limit_num, $offset 값 저장
     $arr_prepare = 
         array(
             "search1" => $search1
@@ -84,9 +88,8 @@
             ,"offset"   => $offset
         );
     
+    // $result_paging에 리스트에서 보여줄 게시글 정보 저장
     $result_paging = select_search_info_paging( $arr_prepare );
-    // print_r( $result_paging );
-    // print_r($_GET);
 ?>
 
 <!DOCTYPE html>

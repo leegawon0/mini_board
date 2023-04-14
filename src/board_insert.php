@@ -4,36 +4,28 @@
     define( "URL_DB", SRC_ROOT."common/db_common.php" );
     define( "URL_HEADER", SRC_ROOT."board_header.php" );
     include_once( URL_DB );
-    // var_dump($_SERVER, $_GET, $_POST);
 
     // Request Method를 습득
     $http_method = $_SERVER["REQUEST_METHOD"];
 
-    // print_r($http_method);
+    // POST 체크
+    if( $http_method === "POST" )
+    {
+        $arr_post = $_POST;
+        $arr_info =
+            array(
+                "board_title" => $arr_post["board_title"]
+                ,"board_content" => $arr_post["board_content"]
+            );
 
     $result_cnt =  select_board_info_maxcnt();
     $maxcnt = $result_cnt[0]["cnt"] + 1;
 
-    if( $http_method === "POST" )
-    {
-    // POST일 때
-    $arr_post = $_POST;
-    $arr_info =
-        array(
-            "board_title" => $arr_post["board_title"]
-            ,"board_content" => $arr_post["board_content"]
-        );
-    
-    // insert
-
     $result_info = insert_board_info( $arr_info );
-
 
     header( "Location: board_detail.php?board_no=".$maxcnt );
     exit();
     }
-
-    // print_r($result_info);
 ?>
 
 <!DOCTYPE html>

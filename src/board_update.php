@@ -4,7 +4,6 @@
     define( "URL_DB", SRC_ROOT."common/db_common.php" );
     define( "URL_HEADER", SRC_ROOT."board_header.php" );
     include_once( URL_DB );
-    // var_dump($_SERVER, $_GET, $_POST);
 
     // Request Method를 습득
     $http_method = $_SERVER["REQUEST_METHOD"];
